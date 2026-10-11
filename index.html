@@ -804,7 +804,8 @@ tr.detail p,tr.detail h4{white-space:normal}
 .t-me .thumb{position:relative;width:38px;height:38px;border-radius:50%;overflow:hidden;flex:none;
   border:1px solid var(--rule);background:var(--reg);padding:0;display:grid;place-items:center;color:#fff}
 .t-me .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.t-me input[type=text]{flex:1;min-width:0;font-size:12.5px;padding:6px 8px}
+.t-me .who{flex:1;min-width:0;font-family:var(--serif);font-size:14px;font-weight:600;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .t-link{background:none;border:none;padding:0;font-size:12px;color:var(--reg);text-decoration:underline;
   text-underline-offset:2px;white-space:nowrap}
 .t-check{display:flex;align-items:center;gap:8px;color:var(--ink-2)}
@@ -4405,13 +4406,21 @@ if(state.rows.length && state.meta){
    working as the dashboard changes, provided the controls keep their ids.
    ======================================================================= */
 const APP_NAME='BDE Analysis';
+/* Who presents the tour, and the voice it opens with. The voice is one of
+   Chrome's own; where it is not on offer (Safari, say) the tour picks the
+   best British voice the device has instead. Either can be changed here. */
+const PRESENTER='Moiz Janjua';
+const DEFAULT_VOICE='Google UK English Male';
 /* Deliberately not a "sig_ab_" key: the dashboard clears keys with that
    prefix that it does not recognise. */
 const PREF_KEY='bde_tour_prefs_v1';
-const prefs=Object.assign({name:'',photo:'',voice:'',speed:1,muted:false,chain:true,seen:false},(()=>{
+const prefs=Object.assign({photo:'',voice:'',speed:1,muted:false,chain:true,seen:false,voiceSet:''},(()=>{
   try{ return JSON.parse(localStorage.getItem(PREF_KEY)||'{}')||{}; }catch(e){ return {}; }
 })());
 const savePrefs=()=>{ try{ localStorage.setItem(PREF_KEY,JSON.stringify(prefs)); }catch(e){} };
+// A voice remembered from before the default was set gives way to it, once.
+// A voice chosen in the dock after that is remembered as usual.
+if(prefs.voiceSet!==DEFAULT_VOICE){ prefs.voice=''; prefs.muted=false; prefs.voiceSet=DEFAULT_VOICE; delete prefs.name; savePrefs(); }
 /* "#tourtest=12" runs the tour silently at twelve times speed, for checking
    every step still finds what it points at after the dashboard is changed. */
 const TEST=(()=>{ const m=/[?&#]tourtest(?:=(\d+(?:\.\d+)?))?/.exec(location.href); return m?{speed:+(m[1]||12),voice:/tourvoice/.test(location.href)}:null; })();
@@ -4531,7 +4540,7 @@ const Guide={
     const f=this.el.querySelector('.t-face'), d=f.querySelector('.disc');
     f.classList.toggle('photo',!!prefs.photo);
     d.innerHTML=prefs.photo?'<img alt="" src="'+prefs.photo+'">':MASCOT;
-    this.el.querySelector('.t-who b').textContent=prefs.name.trim()||'Your guide';
+    this.el.querySelector('.t-who b').textContent=PRESENTER;
   },
   caption(text){
     const c=this.el.querySelector('.t-cap');
@@ -4592,7 +4601,9 @@ const Voice={
   refresh(){
     let all=[]; try{ all=synth?synth.getVoices():[]; }catch(e){}
     this.list=all.filter(v=>/^en([-_]|$)/i.test(v.lang)).sort((a,b)=>this.score(b)-this.score(a));
-    this.cur=this.list.find(v=>v.voiceURI===prefs.voice)||this.list[0]||null;
+    this.cur=this.list.find(v=>v.voiceURI===prefs.voice)
+      ||this.list.find(v=>v.name.trim().toLowerCase()===DEFAULT_VOICE.toLowerCase())
+      ||this.list[0]||null;
     if(ready) Dock.voices();
   },
   usable(){ return !!(synth&&this.cur&&!prefs.muted&&(!TEST||TEST.voice)); },
@@ -5032,9 +5043,9 @@ const Dock={
     '<aside class="t-panel" id="tPanel" aria-label="Guided tour">'+
       '<header><h3>Guided tour</h3><p></p><div class="t-main"></div></header>'+
       '<ol class="t-list"></ol>'+
-      '<details class="t-opts"><summary>Presenter, voice and speed</summary><div class="t-optsin">'+
+      '<details class="t-opts"><summary>Photo, voice and speed</summary><div class="t-optsin">'+
         '<div class="t-me"><button class="thumb" data-t="photo" title="Use your own photo"></button>'+
-          '<input type="text" data-t="name" maxlength="30" placeholder="Presenter’s name" aria-label="Presenter’s name">'+
+          '<span class="who"></span>'+
           '<button class="t-link" data-t="nophoto">Remove photo</button></div>'+
         '<div class="t-row"><label for="tVoice">Voice</label><select id="tVoice"></select></div>'+
         '<div class="t-row"><span class="k">Speed</span><div class="t-seg" data-t="speed">'+
@@ -5067,7 +5078,7 @@ const Dock={
       ' – '+esc(v.lang)+(v.localService?'':' (online)')+'</option>').join('');
     if(prefs.muted) sel.value='-';
     fine.textContent=Voice.list.some(v=>!v.localService)
-      ?'Voices marked online are spoken by the browser maker’s servers, which are sent the script only. The others stay on this device.'
+      ?'Voices marked online are spoken by the browser maker’s servers, so the words read out, names and figures included, are sent there to be turned into speech. The others stay on this device.'
       :'The voice is this device’s own. Nothing is sent anywhere.';
   },
   paint(){
@@ -5099,7 +5110,7 @@ const Dock={
     const thumb=root.querySelector('[data-t="photo"]');
     thumb.innerHTML=prefs.photo?'<img alt="" src="'+prefs.photo+'">':ICON.person;
     root.querySelector('[data-t="nophoto"]').classList.toggle('hidden',!prefs.photo);
-    const nm=root.querySelector('[data-t="name"]'); if(document.activeElement!==nm) nm.value=prefs.name;
+    root.querySelector('.t-me .who').textContent=PRESENTER;
     root.querySelectorAll('[data-t="speed"] button').forEach(x=>x.setAttribute('aria-pressed',String(+x.dataset.v===+prefs.speed)));
     root.querySelector('[data-t="chain"]').checked=!!prefs.chain;
   }
@@ -5168,9 +5179,6 @@ layer.addEventListener('change',e=>{
     prefs.voice=t.value; prefs.muted=false; savePrefs(); Voice.refresh(); paint();
   }else if(t.dataset.t==='chain'){ prefs.chain=t.checked; savePrefs(); }
   else if(t.dataset.t==='file'){ usePhoto(t.files[0]); t.value=''; }
-});
-layer.addEventListener('input',e=>{
-  if(e.target.dataset.t==='name'){ prefs.name=e.target.value; savePrefs(); Guide.face(); }
 });
 // A click on the held-off dashboard points to the way to take over.
 shield.addEventListener('pointerdown',()=>{
@@ -5250,7 +5258,7 @@ const CHAPTERS=[
 {id:'welcome',title:'Welcome',desc:'What the dashboard is for',est:45,
  stage:()=>stage(),
  async run(T){
-  const hello=prefs.name.trim()?'Hello, I’m '+prefs.name.trim()+'.':'Hello, and welcome.';
+  const hello='Hello, I’m '+PRESENTER+'.';
   const loaded=state.rows.length>0;
   await T.beat(hello+' This is '+APP_NAME+'. It takes the weekly Amazon Business activations report and turns it into a clear picture of how every BDE is performing.',
     async()=>{ await T.sleep(1200); await T.move('.brandtext b',{at:[.5,.6]}); T.spot('.brand .logo, .brand .brandtext',{pad:8}); });
