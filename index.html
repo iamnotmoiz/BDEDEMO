@@ -672,46 +672,44 @@ tr.detail p,tr.detail h4{white-space:normal}
 .t-guide.on{opacity:1;visibility:visible;transition:transform .75s var(--ease),opacity .35s var(--ease)}
 .t-guide[data-side="r"]{flex-direction:row-reverse}
 .t-guide[data-v="t"]{align-items:flex-start}
-.t-face{position:relative;width:108px;height:108px;flex:none;border-radius:50%;
-  animation:tBob 5.5s ease-in-out infinite}
-@keyframes tBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.t-face .disc{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:var(--reg);
-  box-shadow:0 0 0 4px var(--surface),0 0 0 5px var(--rule),var(--t-lift)}
-.t-face img{width:100%;height:100%;object-fit:cover;display:block}
-.t-face svg.mascot{width:100%;height:100%;display:block}
-.t-face .ring{position:absolute;inset:-4px;border-radius:50%;border:2.5px solid var(--t-hi);opacity:0}
-.t-guide.speaking .t-face .ring{animation:tRing 1.5s ease-out infinite}
-.t-guide.held .t-face{animation-play-state:paused}
-.t-guide.held .t-face .disc{filter:saturate(.55)}
-@keyframes tRing{0%{opacity:.85;transform:scale(1)}100%{opacity:0;transform:scale(1.2)}}
-/* The mascot is the dashboard's own logo with a face: its three bars are
-   the mouth, and move like a level meter while it talks. */
-.mascot .eye{fill:#fff;transform-box:fill-box;transform-origin:center;animation:tBlink 4.6s infinite}
-@keyframes tBlink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.12)}}
-.mascot .bar{fill:#fff;transform-box:fill-box;transform-origin:center bottom;transition:transform .2s var(--ease)}
-.t-guide.speaking .mascot .bar{animation:tTalk .52s ease-in-out infinite alternate}
-.t-guide.speaking .mascot .bar.b2{animation-duration:.38s;animation-delay:-.2s}
-.t-guide.speaking .mascot .bar.b3{animation-duration:.46s;animation-delay:-.33s}
-@keyframes tTalk{from{transform:scaleY(.42)}to{transform:scaleY(1.12)}}
-/* With a photo in place the level meter moves to a small badge. */
-.t-face .meter{position:absolute;right:-2px;bottom:2px;width:30px;height:30px;border-radius:50%;
-  background:var(--reg);box-shadow:0 0 0 3px var(--surface);display:none;align-items:flex-end;
-  justify-content:center;gap:2.5px;padding-bottom:9px}
-.t-face.photo .meter{display:flex}
-.t-face .meter i{width:3px;height:11px;border-radius:2px;background:#fff;transform-origin:center bottom;transform:scaleY(.4)}
-.t-guide.speaking .meter i{animation:tTalk .5s ease-in-out infinite alternate}
-.t-guide.speaking .meter i:nth-child(2){animation-duration:.36s;animation-delay:-.2s}
-.t-guide.speaking .meter i:nth-child(3){animation-duration:.44s;animation-delay:-.3s}
+.t-guide.drag{transition:none;user-select:none;-webkit-user-select:none}
+.t-guide.drag,.t-guide.drag *{cursor:grabbing!important}
+/* The presenter's bubble: a webcam-style circle with a "live" pill beneath. */
+.t-av{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;
+  pointer-events:auto;cursor:grab;touch-action:none;padding:5px 5px 0}
+.tt-avatar{position:relative;width:96px;height:96px;flex:none}
+.tt-avatar-face{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:#e6eefb;
+  border:3px solid #fff;box-shadow:var(--t-lift);will-change:transform}
+.tt-avatar-face svg,.tt-avatar-face img{display:block;width:100%;height:100%;max-width:none;object-fit:cover;
+  -webkit-user-drag:none;user-select:none}
+/* While speaking: a ring turning through orange, amber and blue. */
+.tt-avatar-ring{position:absolute;inset:-5px;border-radius:50%;opacity:0;transition:opacity .25s var(--ease);
+  background:conic-gradient(from 0deg,#f97316,#f59e0b,#3b82f6,#f97316)}
+.tt-avatar-speaking .tt-avatar-ring{opacity:1;animation:tSpin 2.6s linear infinite}
+@keyframes tSpin{to{transform:rotate(360deg)}}
+.t-live{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.08em;line-height:1;
+  color:#fff;background:#dc2626;border-radius:999px;padding:4px 8px 4px 7px;box-shadow:0 2px 8px -2px rgba(0,0,0,.45)}
+.t-live i{width:6px;height:6px;border-radius:50%;background:#fff;animation:tLiveDot 1.6s ease-in-out infinite}
+@keyframes tLiveDot{0%,100%{opacity:1}50%{opacity:.35}}
+.t-guide.held .t-live{background:#6b7280}
+.t-guide.held .t-live i{animation:none}
+.t-expand{position:absolute;right:-2px;top:-2px;width:28px;height:28px;border-radius:50%;display:none;place-items:center;
+  border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);box-shadow:0 3px 10px -3px rgba(0,0,0,.5);padding:0}
+.t-expand:hover{color:var(--ink);border-color:var(--ink-3)}
+.t-guide.min .t-expand{display:grid}
+.t-guide.min .t-bubble{display:none}
 
 .t-bubble{
-  pointer-events:auto;position:relative;width:min(500px,calc(100vw - 190px));margin-bottom:8px;
+  pointer-events:auto;position:relative;width:min(500px,calc(100vw - 190px));margin-bottom:8px;cursor:default;
   background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:16px;
   box-shadow:var(--t-lift);padding:13px 16px 9px;
 }
 .t-guide[data-v="t"] .t-bubble{margin:8px 0 0}
 .t-who{display:flex;align-items:baseline;gap:10px;font-size:12px;color:var(--ink-3);margin-bottom:5px}
+.t-who{cursor:grab}
 .t-who b{font-family:var(--serif);font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap}
 .t-who span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.t-who .t-min{margin:-5px -7px -5px auto;padding:5px 7px;align-self:center}
 .t-cap{font-size:16.5px;line-height:1.48;min-height:2.96em;text-wrap:pretty}
 .t-cap .w{color:var(--ink-3);transition:color .2s var(--ease)}
 .t-cap .w.said{color:var(--ink)}
@@ -825,11 +823,11 @@ tr.detail p,tr.detail h4{white-space:normal}
 .t-typing{outline:2px solid var(--t-hi)!important;outline-offset:1px}
 
 @media (prefers-reduced-motion:reduce){
-  .t-face{animation:none}
+  .tt-avatar-speaking .tt-avatar-ring,.t-live i{animation:none}
   .t-guide,.t-dock,.t-spot.glide{transition-duration:.01s}
 }
 @media (max-width:760px){
-  .t-face{width:76px;height:76px}
+  .tt-avatar{width:72px;height:72px}
   .t-bubble{width:calc(100vw - 130px)}
   .t-cap{font-size:14.5px}
   .t-bar .t-keys{display:none}
@@ -4398,6 +4396,11 @@ if(state.rows.length && state.meta){
 (function(){
 "use strict";
 
+/* The presenter's portrait. This markup is taken as it stands from Avatar.tsx,
+   the component used in the other demo; make-avatar.py does the lifting. */
+const AVATAR_SVG="<svg viewBox=\"0 0 200 200\" width=\"100%\" height=\"100%\" aria-hidden=\"true\"><defs><radialGradient id=\"tt-av-bg\" cx=\"70%\" cy=\"25%\" r=\"90%\"><stop offset=\"0%\" stop-color=\"#ffffff\" /><stop offset=\"60%\" stop-color=\"#e6eefb\" /><stop offset=\"100%\" stop-color=\"#c9d8f2\" /></radialGradient><linearGradient id=\"tt-av-skin\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#f0c4a2\" /><stop offset=\"100%\" stop-color=\"#dda07c\" /></linearGradient><linearGradient id=\"tt-av-shirt\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#1e3a8a\" /><stop offset=\"100%\" stop-color=\"#14245e\" /></linearGradient></defs><rect width=\"200\" height=\"200\" fill=\"url(#tt-av-bg)\" /><circle cx=\"38\" cy=\"40\" r=\"1.6\" fill=\"#93c5fd\" opacity=\"0.8\" /><circle cx=\"164\" cy=\"30\" r=\"1.3\" fill=\"#93c5fd\" opacity=\"0.6\" /><circle cx=\"176\" cy=\"92\" r=\"1.1\" fill=\"#93c5fd\" opacity=\"0.6\" /><circle cx=\"24\" cy=\"118\" r=\"1.2\" fill=\"#93c5fd\" opacity=\"0.5\" /><path d=\"M34 200 C38 166 62 150 100 148 C138 150 162 166 166 200 Z\" fill=\"url(#tt-av-shirt)\" /><path d=\"M96 156 L104 156 L104 184 L96 184 Z\" fill=\"#172a6b\" /><circle cx=\"100\" cy=\"166\" r=\"1.6\" fill=\"#e2e8f0\" /><circle cx=\"100\" cy=\"176\" r=\"1.6\" fill=\"#e2e8f0\" /><path d=\"M86 146 L100 158 L90 170 L78 156 Z\" fill=\"#1a3178\" stroke=\"#0f1d4d\" stroke-width=\"1.2\" stroke-linejoin=\"round\" /><path d=\"M114 146 L100 158 L110 170 L122 156 Z\" fill=\"#1a3178\" stroke=\"#0f1d4d\" stroke-width=\"1.2\" stroke-linejoin=\"round\" /><g transform=\"translate(60 172)\"><rect x=\"0\" y=\"0\" width=\"24\" height=\"12\" rx=\"3\" fill=\"#ffffff\" opacity=\"0.95\" /><text x=\"12\" y=\"9\" text-anchor=\"middle\" font-family=\"ui-sans-serif, system-ui, sans-serif\" font-weight=\"800\" font-size=\"8\" fill=\"#14245e\" letter-spacing=\"0.5\">SIG</text></g><g transform=\"translate(115 175) scale(0.042)\" fill=\"#ffffff\"><path d=\"M 30 42 C 150 130, 370 150, 500 70 C 508 65, 520 82, 512 92 C 380 190, 140 165, 22 56 C 14 48, 22 36, 30 42 Z\" /><path d=\"M 452 40 C 490 34, 530 36, 558 44 C 566 47, 568 54, 565 62 C 558 90, 548 115, 532 138 C 528 143, 521 140, 524 133 C 536 108, 542 85, 540 66 C 515 60, 485 56, 456 53 C 448 52, 445 42, 452 40 Z\" /></g><path d=\"M58 170 C62 182 64 192 64 200\" stroke=\"#1e3a8a\" stroke-width=\"2\" fill=\"none\" opacity=\"0.5\" /><path d=\"M142 170 C138 182 136 192 136 200\" stroke=\"#1e3a8a\" stroke-width=\"2\" fill=\"none\" opacity=\"0.5\" /><g data-ref=\"head\"><path d=\"M88 128 L88 152 C94 158 106 158 112 152 L112 128 Z\" fill=\"#d4946f\" /><ellipse cx=\"60\" cy=\"98\" rx=\"7\" ry=\"10\" fill=\"#e3ab88\" /><ellipse cx=\"140\" cy=\"98\" rx=\"7\" ry=\"10\" fill=\"#e3ab88\" /><path d=\"M62 86 C62 56 80 42 100 42 C120 42 138 56 138 86 L138 104 C138 128 120 142 100 142 C80 142 62 128 62 104 Z\" fill=\"url(#tt-av-skin)\" /><path d=\"M60 92 C56 58 76 34 102 34 C126 34 146 50 141 90 C139 76 132 66 122 62 C108 70 86 70 70 64 C64 70 61 80 60 92 Z\" fill=\"#2a1d17\" /><path d=\"M70 64 C88 72 112 70 124 60\" stroke=\"#3b2a21\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\" /><g data-ref=\"brows\"><path d=\"M76 82 C82 78 90 78 95 81\" stroke=\"#2a1d17\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\" /><path d=\"M105 81 C110 78 118 78 124 82\" stroke=\"#2a1d17\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\" /></g><ellipse cx=\"86\" cy=\"94\" rx=\"6\" ry=\"6.6\" fill=\"#fff\" /><ellipse cx=\"114\" cy=\"94\" rx=\"6\" ry=\"6.6\" fill=\"#fff\" /><g data-ref=\"pupils\"><circle cx=\"87\" cy=\"95\" r=\"3.6\" fill=\"#2b2420\" /><circle cx=\"115\" cy=\"95\" r=\"3.6\" fill=\"#2b2420\" /><circle cx=\"88.2\" cy=\"93.6\" r=\"1.1\" fill=\"#fff\" /><circle cx=\"116.2\" cy=\"93.6\" r=\"1.1\" fill=\"#fff\" /></g><g data-ref=\"lids\" style=\"transform-origin:100px 88px;transform:scaleY(0);transition:transform 60ms\"><rect x=\"78\" y=\"86\" width=\"16\" height=\"16\" rx=\"7\" fill=\"#e3ab88\" /><rect x=\"106\" y=\"86\" width=\"16\" height=\"16\" rx=\"7\" fill=\"#e3ab88\" /></g><g fill=\"none\" stroke=\"#1f2937\" stroke-width=\"2.6\"><rect x=\"74\" y=\"85\" width=\"24\" height=\"19\" rx=\"7\" fill=\"rgba(255,255,255,0.12)\" /><rect x=\"102\" y=\"85\" width=\"24\" height=\"19\" rx=\"7\" fill=\"rgba(255,255,255,0.12)\" /><path d=\"M98 93 C99.5 91 100.5 91 102 93\" /><path d=\"M74 92 L63 89\" /><path d=\"M126 92 L137 89\" /></g><path d=\"M100 98 C98 106 97 110 101 112\" stroke=\"#c98563\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\" /><ellipse cx=\"76\" cy=\"112\" rx=\"7\" ry=\"4\" fill=\"#e8907a\" opacity=\"0.28\" /><ellipse cx=\"124\" cy=\"112\" rx=\"7\" ry=\"4\" fill=\"#e8907a\" opacity=\"0.28\" /><path d=\"M62 100 C62 118 70 134 84 141 C92 145 108 145 116 141 C130 134 138 118 138 100 C134 112 128 118 120 118 C112 113 88 113 80 118 C72 118 66 112 62 100 Z\" fill=\"#3a2a22\" /><path d=\"M84 118 C92 114 108 114 116 118 C112 121 88 121 84 118 Z\" fill=\"#3a2a22\" /><path data-ref=\"smile\" d=\"M89 121 C95 127 105 127 111 121\" stroke=\"#f3d3c0\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\" /><ellipse data-ref=\"mouth\" cx=\"100\" cy=\"123\" rx=\"7.5\" ry=\"1\" fill=\"#f3d3c0\" stroke=\"#f8e3d6\" stroke-width=\"0.8\" style=\"opacity:0\" /></g></svg>";
+
+
 /* =======================================================================
    Tour engine
    -----------------------------------------------------------------------
@@ -4414,13 +4417,16 @@ const DEFAULT_VOICE='Google UK English Male';
 /* Deliberately not a "sig_ab_" key: the dashboard clears keys with that
    prefix that it does not recognise. */
 const PREF_KEY='bde_tour_prefs_v1';
-const prefs=Object.assign({photo:'',voice:'',speed:1,muted:false,chain:true,seen:false,voiceSet:''},(()=>{
+const prefs=Object.assign({photo:'',voice:'',speed:1,muted:false,chain:true,seen:false,voiceSet:'',pos:null,min:false,portrait:0},(()=>{
   try{ return JSON.parse(localStorage.getItem(PREF_KEY)||'{}')||{}; }catch(e){ return {}; }
 })());
 const savePrefs=()=>{ try{ localStorage.setItem(PREF_KEY,JSON.stringify(prefs)); }catch(e){} };
 // A voice remembered from before the default was set gives way to it, once.
 // A voice chosen in the dock after that is remembered as usual.
 if(prefs.voiceSet!==DEFAULT_VOICE){ prefs.voice=''; prefs.muted=false; prefs.voiceSet=DEFAULT_VOICE; delete prefs.name; savePrefs(); }
+// Likewise a photo saved while the presenter was still the placeholder
+// mascot: the illustrated presenter is shown, and a photo can be added again.
+if(prefs.portrait!==1){ prefs.photo=''; prefs.portrait=1; savePrefs(); }
 /* "#tourtest=12" runs the tour silently at twelve times speed, for checking
    every step still finds what it points at after the dashboard is changed. */
 const TEST=(()=>{ const m=/[?&#]tourtest(?:=(\d+(?:\.\d+)?))?/.exec(location.href); return m?{speed:+(m[1]||12),voice:/tourvoice/.test(location.href)}:null; })();
@@ -4435,13 +4441,10 @@ const ICON={
   sound:'<svg class="t-ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6.2h2.2L8 3.5v9L4.7 9.8H2.5z"/><path d="M10.4 6a3 3 0 0 1 0 4M12.2 4.2a5.5 5.5 0 0 1 0 7.6"/></svg>',
   mute:'<svg class="t-ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6.2h2.2L8 3.5v9L4.7 9.8H2.5z"/><path d="M10.6 6.2l3 3.6M13.6 6.2l-3 3.6"/></svg>',
   chev:'<svg class="t-ico chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg>',
-  person:'<svg class="t-ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5.6" r="2.6"/><path d="M2.8 13.6c.6-2.6 2.6-3.9 5.2-3.9s4.6 1.3 5.2 3.9"/></svg>'
+  person:'<svg class="t-ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5.6" r="2.6"/><path d="M2.8 13.6c.6-2.6 2.6-3.9 5.2-3.9s4.6 1.3 5.2 3.9"/></svg>',
+  min:'<svg class="t-ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 8h8"/></svg>',
+  max:'<svg class="t-ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.2A1.2 1.2 0 0 1 4.2 3h7.6A1.2 1.2 0 0 1 13 4.2v5a1.2 1.2 0 0 1-1.2 1.2H7.6L5 12.7v-2.3h-.8A1.2 1.2 0 0 1 3 9.2z"/></svg>'
 };
-const MASCOT='<svg class="mascot" viewBox="0 0 108 108" aria-hidden="true">'+
-  '<rect class="eye" x="33" y="33" width="10" height="14" rx="5"/><rect class="eye" x="65" y="33" width="10" height="14" rx="5"/>'+
-  '<rect class="bar b1" x="37" y="67" width="9" height="13" rx="4.5"/><rect class="bar b2" x="49.5" y="57" width="9" height="23" rx="4.5"/>'+
-  '<rect class="bar b3" x="62" y="63" width="9" height="17" rx="4.5"/></svg>';
-
 let ready=false;   // set once every part of the tour layer exists
 const layer=el('<div class="t-layer"></div>');
 const shield=el('<div class="t-shield"></div>');
@@ -4521,11 +4524,88 @@ const Mock={
   clear(){ this.open.forEach(e=>e.remove()); this.open=[]; }
 };
 
+/* ---------- the presenter's portrait ----------
+   Ported from Avatar.tsx, the React component used in the other demo. The
+   drawing is that file's SVG untouched (see 1-avatar.js), and the loop below
+   is its animation loop line for line: the same lip-sync, blink, gaze, head
+   and eyebrow sums with the same constants. Only the plumbing differs. React
+   refs are elements found by a data-ref hook, and where the original read its
+   tour store for "is it speaking" and "where is the tour's cursor", this
+   reads the tour's own. */
+const mouse={x:-1,y:-1};
+window.addEventListener('pointermove',e=>{ mouse.x=e.clientX; mouse.y=e.clientY; },{passive:true});
+const Avatar={
+  speaking:false, raf:0, root:null, ref:{},
+  mount(face){
+    face.innerHTML=prefs.photo?'<img src="'+prefs.photo+'" alt="" draggable="false">':AVATAR_SVG;
+    this.root=face; this.ref={};
+    face.querySelectorAll('[data-ref]').forEach(n=>{ this.ref[n.dataset.ref]=n; });
+    face.style.transform='';
+    if(this.raf){ this.stop(); this.start(); }
+  },
+  stop(){ cancelAnimationFrame(this.raf); this.raf=0; },
+  start(){
+    if(this.raf) return;
+    const me=this, R=this.ref, photo=prefs.photo;
+    let open=0, target=0, nextSyllable=0, nextBlink=performance.now()+1800, blinkUntil=0, lookX=0, lookY=0;
+    const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const loop=now=>{
+      const talking=me.speaking;
+      if(talking&&now>nextSyllable){
+        target=Math.random()<0.18?0.05:0.35+Math.random()*0.65;
+        nextSyllable=now+70+Math.random()*110;
+      }
+      if(!talking) target=0;
+      open+=(target-open)*0.35;
+      if(R.mouth){
+        R.mouth.setAttribute('ry',(0.6+open*5.6).toFixed(2));
+        R.mouth.setAttribute('rx',(7.5+open*1.6).toFixed(2));
+        R.mouth.style.opacity=open>0.08?'1':'0';
+      }
+      if(R.smile) R.smile.style.opacity=open>0.08?'0':'1';
+      if(now>nextBlink){
+        blinkUntil=now+130;
+        nextBlink=now+2400+Math.random()*3200;
+      }
+      if(R.lids) R.lids.style.transform=now<blinkUntil?'scaleY(1)':'scaleY(0)';
+      if(R.head&&!reduce){
+        const sway=talking?Math.sin(now/520)*2.2+Math.sin(now/190)*0.6:Math.sin(now/1400)*0.9;
+        const nod=talking?Math.sin(now/300)*1.4:Math.sin(now/1700)*0.6;
+        R.head.setAttribute('transform','rotate('+sway.toFixed(2)+' 100 150) translate(0 '+nod.toFixed(2)+')');
+      }
+      if(R.pupils&&me.root){
+        const tgt=(status==='playing'||status==='paused')?Cur:mouse;
+        const r=me.root.getBoundingClientRect();
+        let dx=0, dy=0;
+        if(tgt.x>=0&&r.width){
+          const vx=tgt.x-(r.left+r.width/2), vy=tgt.y-(r.top+r.height*0.47);
+          const d=Math.hypot(vx,vy)||1;
+          const k=Math.min(1,d/120);
+          dx=(vx/d)*2.3*k; dy=(vy/d)*2*k;
+        }
+        lookX+=(dx-lookX)*0.2; lookY+=(dy-lookY)*0.2;
+        R.pupils.setAttribute('transform','translate('+lookX.toFixed(2)+' '+lookY.toFixed(2)+')');
+      }
+      if(R.brows) R.brows.setAttribute('transform','translate(0 '+(talking?(-open*1.6).toFixed(2):0)+')');
+      if(me.root&&photo){
+        me.root.style.transform=talking&&!reduce?'scale('+(1+open*0.025).toFixed(3)+')':'';
+      }
+      me.raf=requestAnimationFrame(loop);
+    };
+    me.raf=requestAnimationFrame(loop);
+  }
+};
+
 /* ---------- presenter ---------- */
 const Guide={
   el:el('<div class="t-guide" data-side="l" data-v="b" aria-live="off">'+
-    '<div class="t-face"><div class="disc"></div><span class="ring"></span><span class="meter"><i></i><i></i><i></i></span></div>'+
-    '<div class="t-bubble"><div class="t-who"><b></b><span></span></div><div class="t-cap"></div>'+
+    '<div class="t-av" title="Drag to move. Double-click to send it back to its corner.">'+
+      '<div class="tt-avatar"><div class="tt-avatar-ring"></div><div class="tt-avatar-face"></div></div>'+
+      '<button class="t-expand" data-t="max" title="Show the captions and controls" aria-label="Show the captions and controls">'+ICON.max+'</button>'+
+      '<span class="t-live"><i></i>LIVE</span></div>'+
+    '<div class="t-bubble"><div class="t-who"><b></b><span></span>'+
+      '<button class="t-btn t-min" data-t="min" title="Hide the captions and controls" aria-label="Hide the captions and controls">'+ICON.min+'</button></div>'+
+    '<div class="t-cap"></div>'+
     '<div class="t-bar">'+
       '<button class="t-btn" data-t="pause"></button>'+
       '<button class="t-btn" data-t="again" title="Play this section again">'+ICON.again+'</button>'+
@@ -4537,10 +4617,9 @@ const Guide={
     '</div></div></div>'),
   pos:'bl', words:[],
   face(){
-    const f=this.el.querySelector('.t-face'), d=f.querySelector('.disc');
-    f.classList.toggle('photo',!!prefs.photo);
-    d.innerHTML=prefs.photo?'<img alt="" src="'+prefs.photo+'">':MASCOT;
+    Avatar.mount(this.el.querySelector('.tt-avatar-face'));
     this.el.querySelector('.t-who b').textContent=PRESENTER;
+    this.el.classList.toggle('min',!!prefs.min);
   },
   caption(text){
     const c=this.el.querySelector('.t-cap');
@@ -4550,7 +4629,11 @@ const Guide={
   },
   said(n){ for(let i=this.upto+1;i<=n&&i<this.words.length;i++) this.words[i].classList.add('said'); if(n>this.upto) this.upto=n; },
   fill(){ this.said(this.words.length-1); },
-  speaking(on){ this.el.classList.toggle('speaking',!!on); },
+  speaking(on){
+    on=!!on; Avatar.speaking=on;
+    this.el.classList.toggle('speaking',on);
+    this.el.querySelector('.tt-avatar').classList.toggle('tt-avatar-speaking',on);
+  },
   box(pos){
     const m=20, w=this.el.offsetWidth, hh=this.el.offsetHeight;
     const right=Dock.open?Dock.width()+52:66;
@@ -4558,15 +4641,47 @@ const Guide={
     const y=pos[0]==='b'?innerHeight-hh-m:stickBottom()+14;
     return {left:x,top:y,right:x+w,bottom:y+hh};
   },
+  /* Left to itself the presenter keeps to a corner. Once dragged, it stays
+     where it was dropped: the bubble holds its place and the caption panel
+     opens to whichever side, and upwards or downwards, there is room. */
   place(pos){
     if(pos) this.pos=pos;
-    const b=this.box(this.pos);
-    this.el.dataset.side=this.pos[1]; this.el.dataset.v=this.pos[0];
-    this.el.style.transform='translate('+Math.round(b.left)+'px,'+Math.round(b.top)+'px)';
+    const w=this.el.offsetWidth, hh=this.el.offsetHeight;
+    let x,y,side,v;
+    if(prefs.pos){
+      const col=this.el.querySelector('.t-av'), cw=col.offsetWidth, ch=col.offsetHeight;
+      const left=Math.min(Math.max(prefs.pos.fx*innerWidth,4),Math.max(4,innerWidth-cw-4));
+      const bottom=Math.min(Math.max(prefs.pos.fy*innerHeight,ch+4),innerHeight-4);
+      side=left+w>innerWidth-6?'r':'l'; v=bottom-hh<4?'t':'b';
+      x=Math.max(4,side==='l'?left:left-(w-cw)); y=v==='b'?bottom-hh:bottom-ch;
+    }else{
+      const b=this.box(this.pos); x=b.left; y=b.top; side=this.pos[1]; v=this.pos[0];
+    }
+    this.pin(x,y,x+w,y+hh,side,v);
   },
-  /* Float to whichever corner leaves the thing being shown uncovered. */
+  /* The panel is pinned by the edges the bubble sits on: bottom-left when the
+     bubble is at the bottom left of it, and so on. A caption growing by a
+     line, or the panel being minimised, then leaves the bubble exactly where
+     it is instead of nudging it. When the pinned corner itself changes, the
+     switch is made out of sight and the move across the screen stays smooth. */
+  pin(l,t,r,b,side,v){
+    const e=this.el, s=e.style, W=document.documentElement.clientWidth, H=innerHeight;
+    const put=(l,t,r,b)=>{
+      s.left=side==='l'?'0':'auto'; s.right=side==='l'?'auto':'0';
+      s.top=v==='t'?'0':'auto'; s.bottom=v==='t'?'auto':'0';
+      s.transform='translate('+Math.round(side==='l'?l:r-W)+'px,'+Math.round(v==='t'?t:b-H)+'px)';
+    };
+    if((e.dataset.side!==side||e.dataset.v!==v)&&e.classList.contains('on')){
+      const now=e.getBoundingClientRect();
+      e.dataset.side=side; e.dataset.v=v;
+      s.transition='none'; put(now.left,now.top,now.right,now.bottom); void e.offsetWidth; s.transition='';
+    }else{ e.dataset.side=side; e.dataset.v=v; }
+    put(l,t,r,b);
+  },
+  /* Float to whichever corner leaves the thing being shown uncovered, unless
+     the presenter has been put somewhere by hand. */
   avoid(r){
-    if(!r) return;
+    if(!r||prefs.pos) return;
     const pad=16, R={left:r.left-pad,top:r.top-pad,right:r.right+pad,bottom:r.bottom+pad};
     const over=a=>Math.max(0,Math.min(a.right,R.right)-Math.max(a.left,R.left))*Math.max(0,Math.min(a.bottom,R.bottom)-Math.max(a.top,R.top));
     // Bottom left is home: it goes back there as soon as that corner is free.
@@ -4575,8 +4690,9 @@ const Guide={
     if(least>0) for(const p of order.slice(1)){ const o=over(this.box(p)); if(o<least-1){ best=p; least=o; if(!o) break; } }
     if(best!==this.pos) this.place(best);
   },
-  show(){ this.face(); this.el.classList.add('on'); this.place(); },
-  hide(){ this.el.classList.remove('on','speaking'); }
+  show(){ this.face(); this.el.classList.add('on'); this.place(); Avatar.start(); },
+  hide(){ this.speaking(false); this.el.classList.remove('on'); Avatar.stop(); },
+  shrink(on){ prefs.min=!!on; savePrefs(); this.el.classList.toggle('min',prefs.min); this.place(); }
 };
 layer.appendChild(Guide.el);
 
@@ -4603,6 +4719,7 @@ const Voice={
     this.list=all.filter(v=>/^en([-_]|$)/i.test(v.lang)).sort((a,b)=>this.score(b)-this.score(a));
     this.cur=this.list.find(v=>v.voiceURI===prefs.voice)
       ||this.list.find(v=>v.name.trim().toLowerCase()===DEFAULT_VOICE.toLowerCase())
+      ||this.list.find(v=>/^daniel\b/i.test(v.name)&&/^en[-_]GB/i.test(v.lang))
       ||this.list[0]||null;
     if(ready) Dock.voices();
   },
@@ -4889,7 +5006,8 @@ function ctx(my){
   function speakOne(s){
     const n=s.w1-s.w0+1;
     if(!Voice.usable()) return (async()=>{
-      for(let i=0;i<n;i++){ Guide.said(s.w0+i); await sleep(WORD_MS); }
+      try{ for(let i=0;i<n;i++){ Guide.speaking(true); Guide.said(s.w0+i); await sleep(WORD_MS); } }
+      finally{ if(alive()) Guide.speaking(false); }
       await sleep(SENT_MS); return 'end';
     })();
     return new Promise((res,rej)=>{
@@ -4897,8 +5015,9 @@ function ctx(my){
       u.voice=Voice.cur; u.lang=Voice.cur.lang; u.rate=Math.max(.5,Math.min(2,Number(prefs.speed)||1));
       Voice.keep=u;   // some browsers drop the end event if the utterance is collected
       const est=(n*WORD_MS+SENT_MS)/u.rate, t0=performance.now();
-      let done=false, heard=false;
-      const fin=how=>{ if(done) return; done=true; clearInterval(iv); how==='abort'?rej(ABORT):res(how); };
+      let done=false, heard=false, started=false;
+      const fin=how=>{ if(done) return; done=true; clearInterval(iv); if(alive()) Guide.speaking(false); how==='abort'?rej(ABORT):res(how); };
+      u.onstart=()=>{ started=true; if(!done) Guide.speaking(true); };
       u.onboundary=e=>{ heard=true; Guide.said(s.w0+Math.min(n-1,Math.round(e.charIndex/Math.max(1,u.text.length)*n))); };
       u.onend=()=>{ Guide.said(s.w1); fin('end'); };
       u.onerror=()=>fin(paused?'paused':'end');
@@ -4908,6 +5027,7 @@ function ctx(my){
         if(paused){ Voice.stop(); return fin('paused'); }
         if(prefs.muted){ Voice.stop(); return fin('end'); }
         if(!heard) Guide.said(s.w0+Math.min(n-1,Math.floor(t/est*n)));
+        if(!started&&t>450){ started=true; Guide.speaking(true); }   // a browser that reports no start
         if(t>est*2.5+5000){ Voice.stop(); fin('end'); }   // the browser never reported the end
       },70);
       try{ synth.resume(); synth.speak(u); }catch(e){ fin('end'); }
@@ -4920,7 +5040,6 @@ function ctx(my){
     try{
       for(let i=0;i<ss.length;i++){
         await gate();
-        Guide.speaking(true);
         // A sentence cut off by pausing is said again from its start.
         if(await speakOne(ss[i])==='paused') i--;
       }
@@ -4965,7 +5084,7 @@ function setStatus(s){
   if(s!=='playing') Guide.speaking(false);
   Guide.el.classList.toggle('held',s==='paused');
   if(s==='idle'||s==='roam'||s==='done'){ Cur.hide(); Spot.hide(); Mock.clear(); }
-  if(s==='waiting') Cur.hide();
+  if(s==='waiting'){ Cur.hide(); if(prefs.min) Guide.shrink(false); }
   paint();
 }
 const visible=()=>CHAPTERS.filter(c=>!c.when||c.when());
@@ -5165,6 +5284,8 @@ layer.addEventListener('click',e=>{
   else if(t==='resume') resume();
   else if(t==='end') end();
   else if(t==='skip'){ if(asking&&asking.skip) asking.skip(); }
+  else if(t==='min') Guide.shrink(true);
+  else if(t==='max') Guide.shrink(false);
   else if(t==='again') play(now||visible()[0].id);
   else if(t==='next'||t==='nextup') step(1);
   else if(t==='mute') setMuted(!prefs.muted);
@@ -5180,6 +5301,32 @@ layer.addEventListener('change',e=>{
   }else if(t.dataset.t==='chain'){ prefs.chain=t.checked; savePrefs(); }
   else if(t.dataset.t==='file'){ usePhoto(t.files[0]); t.value=''; }
 });
+/* The presenter can be picked up by the bubble or by the caption panel and
+   put anywhere. Where it is dropped is remembered as a share of the window,
+   so it lands in the same place on a different screen. */
+(function(){
+  let d=null;
+  Guide.el.addEventListener('pointerdown',e=>{
+    if(e.button!==0||e.target.closest('button,select,input,a')) return;
+    const c=Guide.el.querySelector('.t-av').getBoundingClientRect();
+    d={x:e.clientX,y:e.clientY,left:c.left,bottom:c.bottom,w:c.width,h:c.height,moved:false,id:e.pointerId};
+  });
+  window.addEventListener('pointermove',e=>{
+    if(!d||e.pointerId!==d.id) return;
+    const dx=e.clientX-d.x, dy=e.clientY-d.y;
+    if(!d.moved&&Math.hypot(dx,dy)<5) return;
+    d.moved=true; Guide.el.classList.add('drag');
+    const left=Math.min(Math.max(d.left+dx,4),innerWidth-d.w-4), bottom=Math.min(Math.max(d.bottom+dy,d.h+4),innerHeight-4);
+    prefs.pos={fx:left/innerWidth,fy:bottom/innerHeight};
+    Guide.place();
+  });
+  const drop=()=>{ if(d&&d.moved){ Guide.el.classList.remove('drag'); savePrefs(); } d=null; };
+  window.addEventListener('pointerup',drop); window.addEventListener('pointercancel',drop);
+  Guide.el.querySelector('.t-av').addEventListener('dblclick',e=>{
+    if(e.target.closest('button')) return;
+    prefs.pos=null; savePrefs(); Guide.place('bl');
+  });
+})();
 // A click on the held-off dashboard points to the way to take over.
 shield.addEventListener('pointerdown',()=>{
   const b=Guide.el.querySelector('[data-t="pause"]');
